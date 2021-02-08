@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Категории</title>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/bootstrap/js/jquery-3.3.1.slim.min.js"></script>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap/fontawesome/css/font-awesome.min.css">
+    <style>
+        .nav-item {
+            font-size: large;
+        }
+        .social .fa {
+            padding: 10px;
+            font-size: 30px;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 50%;
+        }
+
+        .fa:hover {
+            opacity: 0.7;
+        }
+
+        .fa-facebook {
+            background: #3B5998;
+            color: white;
+        }
+        .fa-google {
+            background: #dd4b39;
+            color: white;
+        }
+
+        .fa-linkedin {
+            background: #007bb5;
+            color: white;
+        }
+        .fa-instagram {
+            background: #125688;
+            color: white;
+        }
+        .fa-skype {
+            background: #00aff0;
+            color: white;
+
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid bg-light">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light font-weight-bold">
+            <a class="navbar-brand" href="/home">
+                <img src="/images/logo.png" width="100px" height="70px">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/home">Почетна </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Производи <span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/categories" sec:authorize="hasRole('ROLE_ADMIN')">Категории</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/aboutus">За нас</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Контакт</a>
+                    </li>
+
+
+                </ul>
+                <ul class="navbar-nav mr-auto pl-5">
+                    <li class="nav-item">
+                        <a href="/payments/charge" class="nav-link navbar-link-2 waves-effect">
+                            <p>
+                                <sub class="fa fa-shopping-cart fa-2x text-dark"></sub><sup class="badge badge-warning" th:text="${shoppingCart?.getCartItems()?.size()}"></sup>
+
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+
+
+                <ul class="navbar-nav mr-auto">
+                    <!--               da go gleda Najavi se dokolku ne e najaven nikoj -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login" sec:authorize="!isAuthenticated()">Најави се</a>
+                    </li>
+
+                    <!--                da se gleda odjavi se  i imeto na najaveniot samo dokolku ima najaveno nekoj-->
+                    <!--za da se prikazuva imeto na najaveniot korisnik-->
+                    <li class="nav-item">
+                        <div class="row">
+                            <div class="col text-right p-0">
+                                <p class="fa fa-user pt-3" sec:authorize="isAuthenticated()"></p>
+                            </div>
+                            <div class="col pl-0">
+                                <a class="nav-link" sec:authentication="name" sec:authorize="isAuthenticated()"></a>
+
+                            </div></div>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout" sec:authorize="isAuthenticated()">Одјави се</a>
+                    </li>
+                </ul>
+
+
+            </div>
+        </nav>
+    </div>
+<div class="container">
+    <div th:if="${param.error}">
+        <h2 class="text-danger text-center" th:text="${param.error}"></h2>
+    </div>
+    <h3>Категории:</h3>
+
+    <div class="row pt-3" th:each="category:${categories}">
+        <div class="col-sm-4">
+        <h5 th:text="${category.getCategoryName()}"></h5>
+        </div>
+        <div class="col-sm-2 text-right">
+        <a th:href="@{/categories/{id}/edit(id=${category.getId()})}" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+        </div>
+        <div class="col-sm-2 text-left">
+        <form th:action="@{/categories/{id}/delete(id=${category.getId()})}" th:method="post">
+            <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+
+        </form>
+        </div>
+
+    </div>
+<br>
+    <div class="row pt-5 pb-5">
+    <!-- kopce za dodavanje na kategorija-->
+    <a href="/categories/add-new-category" class="btn btn-outline-warning">Додади категорија</a>
+    </div>
+    <br>
+    <br>
+    </div>
+</div>
+
+</body>
+<footer class="page-footer bg-dark pt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-8 ">
+                <h5 class="text-light">Достапни 24/7</h5>
+                <h5 class="text-light">За нарачка или било какви информации можете слободно да не исконтактирате во секое време на:</h5>
+                <h5 class="text-light"><i class="fa fa-mobile-phone"> 071 346 199</i></h5>
+                <h5 class="text-light"><i class="fa fa-home"></i> Кеј 30-ти Август 6, Виница</h5>
+                <a href="https://www.google.com/maps/@41.8839972,22.5005466,20.81z" class="btn btn-light"><i class="fa fa-map-marker"></i> Погледни мапа </a>
+            </div>
+            <div class="col-4" style="font-size:x-large">
+                <ul style="list-style-type: none" >
+                    <li><a href="/home" style="text-decoration: none" class="text-light">Почетна</a> </li>
+                    <li><a href="/products" style="text-decoration: none" class="text-light">Производи</a> </li>
+                    <li><a href="/aboutus" style="text-decoration: none" class="text-light">За нас</a> </li>
+                    <li><a href="/contact" style="text-decoration: none" class="text-light">Контакт</a> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container text-center social">
+        <a href="#" class="fa fa-facebook"></a>
+        <a href="#" class="fa fa-google"></a>
+        <a href="#" class="fa fa-linkedin"></a>
+        <a href="#" class="fa fa-instagram"></a>
+        <a href="#" class="fa fa-skype"></a>
+
+    </div>
+    <div class="footer-copyright text-center py-3">
+        <h5 class="text-light">&copy; 2020 ПЕТРОВИ ПЧЕЛАРСТВО ВИНИЦА</h5>
+    </div>
+
+</footer>
+</html>
